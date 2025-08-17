@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main Menu -->
+    <div class="main-menu" id="mainMenu">
+        <div class="menu-container">
+            <h1 class="app-title">Calculator App</h1>
+            <p class="app-subtitle">Choose your calculator type</p>
+
+            <div class="menu-options">
+                <div class="option-card" onclick="showCalculator('basic')">
+                    <div class="option-icon">🔢</div>
+                    <h3>Basic Calculator</h3>
+                    <p>Simple arithmetic operations</p>
+                    <div class="features">
+                        <span>• Addition, Subtraction</span>
+                        <span>• Multiplication, Division</span>
+                        <span>• Decimal Support</span>
+                    </div>
+                </div>
+
+                <div class="option-card" onclick="showCalculator('scientific')">
+                    <div class="option-icon">🧮</div>
+                    <h3>Scientific Calculator</h3>
+                    <p>Advanced mathematical functions</p>
+                    <div class="features">
+                        <span>• Trigonometric Functions</span>
+                        <span>• Logarithms & Constants</span>
+                        <span>• Powers & Factorials</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculator Interface -->
+    <div class="calculator-container" id="calculatorContainer" style="display: none;">
+        <div class="calculator">
+            <div class="header">
+                <button class="back-btn" onclick="showMainMenu()">← Back</button>
+                <h2 id="calculatorTitle">Calculator</h2>
+                <div class="controls">
+                    <button class="control-btn" onclick="toggleHistory()">📋</button>
+                    <button class="control-btn" onclick="toggleThemeSelector()">🎨</button>
+                    <div class="voice-controls">
+                        <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()">🎤</button>
+                        <button class="speak-btn" id="speakBtn" onclick="speakResult()">🔊</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="display">
+                <div id="history" class="history"></div>
+                <input type="text" id="display" readonly>
+                <div class="voice-status" id="voiceStatus" style="display: none;">
+                    <span class="listening-indicator">🎤 Listening...</span>
+                </div>
+            </div>
+
+            <div class="scientific-panel" id="scientificPanel" style="display: none;">
+                <button class="btn scientific" onclick="appendFunction('sin(')">sin</button>
+                <button class="btn scientific" onclick="appendFunction('cos(')">cos</button>
+                <button class="btn scientific" onclick="appendFunction('tan(')">tan</button>
+                <button class="btn scientific" onclick="appendFunction('log(')">log</button>
+                <button class="btn scientific" onclick="appendFunction('ln(')">ln</button>
+
+                <button class="btn scientific" onclick="appendFunction('asin(')">asin</button>
+                <button class="btn scientific" onclick="appendFunction('acos(')">acos</button>
+                <button class="btn scientific" onclick="appendFunction('atan(')">atan</button>
+                <button class="btn scientific" onclick="appendConstant('π')">π</button>
+                <button class="btn scientific" onclick="appendConstant('e')">e</button>
+
+                <button class="btn scientific" onclick="appendFunction('sqrt(')">√</button>
+                <button class="btn scientific" onclick="appendOperator('^')">x^y</button>
+                <button class="btn scientific" onclick="appendFunction('abs(')">|x|</button>
+                <button class="btn scientific" onclick="appendOperator('!')">x!</button>
+                <button class="btn scientific" onclick="appendOperator('%')">%</button>
+            </div>
+
+            <!-- Memory and History Panel -->
+            <div class="memory-panel" id="memoryPanel" style="display: none;">
+                <div class="memory-buttons">
+                    <button class="btn memory" onclick="memoryClear()">MC</button>
+                    <button class="btn memory" onclick="memoryRecall()">MR</button>
+                    <button class="btn memory" onclick="memoryAdd()">M+</button>
+                    <button class="btn memory" onclick="memorySubtract()">M-</button>
+                    <button class="btn memory" onclick="memoryStore()">MS</button>
+                </div>
+                <div class="memory-display">
+                    <span>Memory: </span><span id="memoryValue">0</span>
+                </div>
+            </div>
+
+            <!-- History Panel -->
+            <div class="history-panel" id="historyPanel" style="display: none;">
+                <div class="history-header">
+                    <h3>Calculation History</h3>
+                    <button class="btn clear-history" onclick="clearHistory()">Clear All</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <p class="no-history">No calculations yet</p>
+                </div>
+            </div>
+
+            <!-- Theme Selector Panel -->
+            <div class="theme-panel" id="themePanel" style="display: none;">
+                <div class="theme-header">
+                    <h3>Choose Theme</h3>
+                </div>
+                <div class="theme-grid">
+                    <div class="theme-option" data-theme="default" onclick="setTheme('default')">
+                        <div class="theme-preview default-theme"></div>
+                        <span>Ocean Blue</span>
+                    </div>
+                    <div class="theme-option" data-theme="dark" onclick="setTheme('dark')">
+                        <div class="theme-preview dark-theme"></div>
+                        <span>Dark Mode</span>
+                    </div>
+                    <div class="theme-option" data-theme="sunset" onclick="setTheme('sunset')">
+                        <div class="theme-preview sunset-theme"></div>
+                        <span>Sunset</span>
+                    </div>
+                    <div class="theme-option" data-theme="forest" onclick="setTheme('forest')">
+                        <div class="theme-preview forest-theme"></div>
+                        <span>Forest</span>
+                    </div>
+                    <div class="theme-option" data-theme="neon" onclick="setTheme('neon')">
+                        <div class="theme-preview neon-theme"></div>
+                        <span>Neon</span>
+                    </div>
+                    <div class="theme-option" data-theme="minimal" onclick="setTheme('minimal')">
+                        <div class="theme-preview minimal-theme"></div>
+                        <span>Minimal</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn clear" onclick="clearDisplay()">C</button>
+                <button class="btn clear" onclick="clearEntry()">CE</button>
+                <button class="btn operator" onclick="deleteLast()">⌫</button>
+                <button class="btn operator" onclick="appendToDisplay('/')">/</button>
+
+                <button class="btn number" onclick="appendToDisplay('7')">7</button>
+                <button class="btn number" onclick="appendToDisplay('8')">8</button>
+                <button class="btn number" onclick="appendToDisplay('9')">9</button>
+                <button class="btn operator" onclick="appendToDisplay('*')">×</button>
+
+                <button class="btn number" onclick="appendToDisplay('4')">4</button>
+                <button class="btn number" onclick="appendToDisplay('5')">5</button>
+                <button class="btn number" onclick="appendToDisplay('6')">6</button>
+                <button class="btn operator" onclick="appendToDisplay('-')">-</button>
+
+                <button class="btn number" onclick="appendToDisplay('1')">1</button>
+                <button class="btn number" onclick="appendToDisplay('2')">2</button>
+                <button class="btn number" onclick="appendToDisplay('3')">3</button>
+                <button class="btn operator" onclick="appendToDisplay('+')">+</button>
+
+                <button class="btn operator" onclick="appendToDisplay('(')" id="leftParen">(</button>
+                <button class="btn number" onclick="appendToDisplay('0')">0</button>
+                <button class="btn operator" onclick="appendToDisplay(')')" id="rightParen">)</button>
+                <button class="btn number" onclick="appendToDisplay('.')">.</button>
+
+                <button class="btn equals" onclick="calculate()">=</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Particle Canvas -->
+    <canvas id="particleCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1;"></canvas>
+
+    <!-- Sound Toggle -->
+    <div class="sound-toggle" id="soundToggle" onclick="toggleSound()">
+        <span id="soundIcon">🔊</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
